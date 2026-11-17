@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post a job | LocalLance</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+  <div class="wrap page-title">
+    <h1>Post a job</h1>
+    <p class="muted">Posting is free. Verified local freelancers will send you proposals.</p>
+  </div>
+  <div class="wrap cols">
+    <div id="form-holder">
+      <form class="card" id="job-form">
+        <div class="field"><label for="title">Job title</label><input type="text" id="title" required placeholder="e.g. New website for my cafe"></div>
+        <div class="field-row">
+          <div class="field"><label for="category">Service</label><select id="category" required></select></div>
+          <div class="field"><label for="budget">Budget (AUD)</label><input type="number" id="budget" required min="50" step="10" placeholder="800"></div>
+        </div>
+        <div class="field"><label for="description">What do you need done?</label><textarea id="description" required placeholder="Describe the work, what you already have, and anything the freelancer should know."></textarea></div>
+        <div class="field-row">
+          <div class="field"><label for="suburb">Suburb</label><select id="suburb" required></select></div>
+          <div class="field"><label for="deadline">Needed by</label><input type="date" id="deadline" required></div>
+        </div>
+        <div class="field"><label class="check"><input type="checkbox" id="onsite"> The freelancer needs to come on site</label></div>
+        <button class="btn" type="submit">Post job</button>
+      </form>
+    </div>
+    <div class="card">
+      <h3>What happens next</h3>
+      <p class="muted">1. Freelancers send proposals with a price and a timeframe.</p>
+      <p class="muted">2. You pick one and pay through PayPal. The money is held, not paid out.</p>
+      <p class="muted">3. When you approve the work, the payment is released.</p>
+      <p><b>You pay no fee.</b> <span class="muted">The flat 8% fee comes out of the freelancer's payout.</span></p>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/post-job.js"></script>
+</body>
+</html>

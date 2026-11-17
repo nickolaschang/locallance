@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact us | LocalLance</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+  <div class="wrap page-title">
+    <h1>Contact us</h1>
+    <p class="muted">Questions about a job, a payment or your account? We reply within one business day.</p>
+  </div>
+  <div class="wrap cols">
+    <div id="form-holder">
+      <form class="card" id="contact-form">
+        <div class="field-row">
+          <div class="field"><label for="name">Your name</label><input type="text" id="name" required></div>
+          <div class="field"><label for="email">Email</label><input type="email" id="email" required></div>
+        </div>
+        <div class="field"><label for="topic">Topic</label>
+          <select id="topic">
+            <option>General question</option>
+            <option>Help with a job</option>
+            <option>Payments and refunds</option>
+            <option>Report a problem with a freelancer or customer</option>
+            <option>Advertising and promoted listings</option>
+          </select>
+        </div>
+        <div class="field"><label for="message">Message</label><textarea id="message" required></textarea></div>
+        <button class="btn" type="submit">Send message</button>
+      </form>
+    </div>
+    <div class="stack">
+      <div class="card" id="details"></div>
+      <div class="card">
+        <h3>Find us</h3>
+        <iframe class="map-frame" id="office-map" title="Map showing the LocalLance office" loading="lazy"></iframe>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/contact.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Log in | LocalLance</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+  <div class="wrap page-title">
+    <h1>Log in or sign up</h1>
+    <p class="muted">This is a demonstration, so there are no passwords. Pick a ready-made account, or create your own.</p>
+  </div>
+  <div class="wrap grid c2">
+    <div class="stack">
+      <div class="card"><h3>Customer demo accounts</h3><div id="demo-customers"></div></div>
+      <div class="card"><h3>Freelancer demo accounts</h3><div id="demo-freelancers"></div></div>
+    </div>
+    <form class="card" id="signup-form">
+      <h3>Create an account</h3>
+      <div class="field">
+        <label>I am a</label>
+        <div class="row">
+          <label class="check"><input type="radio" name="role" value="customer" checked> Customer (small business)</label>
+          <label class="check"><input type="radio" name="role" value="freelancer"> Freelancer</label>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="name">Your name</label><input type="text" id="name" required></div>
+        <div class="field"><label for="email">Email</label><input type="email" id="email" required></div>
+      </div>
+      <div class="field"><label for="suburb">Suburb</label><select id="suburb"></select></div>
+
+      <div id="customer-fields">
+        <div class="field"><label for="business">Business name</label><input type="text" id="business"></div>
+      </div>
+
+      <div id="freelancer-fields" class="hidden">
+        <div class="field-row">
+          <div class="field"><label for="title">Job title</label><input type="text" id="title" placeholder="e.g. Web developer"></div>
+          <div class="field"><label for="category">Main service</label><select id="category"></select></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="rate">Hourly rate (AUD)</label><input type="number" id="rate" min="20" value="50"></div>
+          <div class="field"><label for="abn">ABN (11 digits)</label><input type="text" id="abn" placeholder="00 000 000 000"></div>
+        </div>
+        <p class="hint">An 11-digit ABN is marked as verified. In the real product it would be checked against ABN Lookup.</p>
+        <div class="field"><label for="bio">About you</label><textarea id="bio" placeholder="What do you do, and for whom?"></textarea></div>
+      </div>
+
+      <button class="btn" type="submit">Create account</button>
+    </form>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/login.js"></script>
+</body>
+</html>

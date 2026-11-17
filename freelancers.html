@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Find freelancers | LocalLance</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+  <div class="wrap page-title">
+    <h1>Find freelancers</h1>
+    <p class="muted">Verified freelancers across Melbourne, sorted by how close they are to you.</p>
+  </div>
+  <div class="wrap cols side-left">
+    <form class="card" id="filters">
+      <div class="field"><label for="f-text">Search</label><input type="search" id="f-text" placeholder="Name, skill or title"></div>
+      <div class="field"><label for="f-category">Service</label><select id="f-category"><option value="">All services</option></select></div>
+      <div class="field"><label for="f-from">My suburb</label><select id="f-from"></select></div>
+      <div class="field"><label for="f-km">Distance</label><select id="f-km"><option value="">Any distance</option><option value="5">Within 5 km</option><option value="10">Within 10 km</option><option value="20">Within 20 km</option></select></div>
+      <div class="field"><label class="check"><input type="checkbox" id="f-verified"> ABN verified only</label></div>
+      <div class="field"><label for="f-sort">Sort by</label><select id="f-sort"><option value="near">Nearest first</option><option value="rating">Highest rated</option><option value="rate">Lowest hourly rate</option></select></div>
+    </form>
+    <div class="stack">
+      <div id="map-holder"></div>
+      <div class="muted" id="count"></div>
+      <div class="grid c2" id="freelancer-list"></div>
+    </div>
+  </div>
+</main>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/freelancers.js"></script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LocalLance | Local talent, job done</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+
+<main>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>Local talent, <span>job done.</span></h1>
+        <p class="lead">Hire ABN-verified freelancers near you for websites, design, IT support and bookkeeping. Pay only when you approve the work.</p>
+        <form class="hero-search" id="search-form">
+          <input type="search" id="search-text" placeholder="What do you need done?" aria-label="What do you need done?">
+          <select id="search-kind" aria-label="Search in">
+            <option value="freelancers">Freelancers</option>
+            <option value="jobs">Jobs</option>
+          </select>
+          <button class="btn" type="submit">Search</button>
+        </form>
+        <div class="trust">
+          <span><b>&#10003;</b> ABN-verified freelancers</span>
+          <span><b>&#10003;</b> Free for customers</span>
+          <span><b>&#10003;</b> Flat 8% freelancer fee</span>
+        </div>
+      </div>
+      <div class="panel">
+        <h2 id="near-title">Freelancers near you</h2>
+        <div id="near-list"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap stack">
+      <div id="promo"></div>
+      <h2 style="margin-top:24px">How it works</h2>
+      <div class="grid c3">
+        <div class="card"><div class="num">1</div><h3>Post a job</h3><p class="muted">Free to post. Describe the work and your budget.</p></div>
+        <div class="card"><div class="num">2</div><h3>Pick a freelancer</h3><p class="muted">Compare ratings, portfolios and distance. Every freelancer is ABN-checked.</p></div>
+        <div class="card"><div class="num">3</div><h3>Pay on approval</h3><p class="muted">PayPal holds the money until you approve the work.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="row"><h2>Services</h2><span class="spacer"></span><a href="services.html">All services</a></div>
+      <div class="grid c3" id="services"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="row"><h2>Featured freelancers</h2><span class="spacer"></span><a href="freelancers.html">Browse all freelancers</a></div>
+      <div class="grid c3" id="featured"></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="row"><h2>Latest jobs</h2><span class="spacer"></span><a href="jobs.html">Browse all jobs</a></div>
+      <div class="grid c3" id="latest-jobs"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="grid c4" id="stats"></div>
+      <div class="grid c2" style="margin-top:24px">
+        <div class="card dark"><h3>Need something done?</h3><p class="muted">Post a job for free and get proposals from verified locals.</p><a class="btn light" href="post-job.html">Post a job</a></div>
+        <div class="card"><h3>Are you a freelancer?</h3><p class="muted">Keep 92% of every job. Your first job is fee-free.</p><a class="btn" href="login.html">Join LocalLance</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/home.js"></script>
+</body>
+</html>
