@@ -218,6 +218,7 @@ tr:last-child td { border-bottom: none; }
 .bubble.mine { align-self: flex-end; background: var(--blue); color: #fff; }
 .bubble .when { font-size: 12px; opacity: 0.75; }
 .thread-link { display: flex; gap: 12px; align-items: center; padding: 11px 12px; border-radius: 6px; color: var(--ink-2); border-left: 3px solid transparent; }
+.thread-link > span { flex: 1; min-width: 0; } /* lets long job titles shorten with "..." instead of spilling out */
 .thread-link:hover { text-decoration: none; background: var(--bg); }
 .thread-link.active { background: var(--blue-tint); border-left-color: var(--blue); }
 
