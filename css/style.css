@@ -125,6 +125,9 @@ a.cat:hover { background: var(--surface); border-color: var(--line); box-shadow:
 /* ----- Map ----- */
 .map { width: 100%; height: auto; display: block; border: 1px solid var(--line); border-radius: var(--radius); background: #EEF2F7; box-shadow: var(--shadow); }
 .map-frame { width: 100%; height: 300px; border: 1px solid var(--line); border-radius: var(--radius); }
+.map-tip { position: absolute; z-index: 20; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 10px 14px; font-size: 14px; white-space: nowrap; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-lift); pointer-events: none; }
+.map-tip[hidden] { display: none; }
+.map-tip > span { display: flex; flex-direction: column; }
 
 /* ----- Ruled lists (jobs and freelancers) ----- */
 .list { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }

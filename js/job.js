@@ -18,7 +18,9 @@ function actionPanel(j, me, ctx) {
   if (!me) return j.status === 'open' ? LLUI.needLogin('send a proposal') : '';
 
   if (isOwner) {
-    if (j.status === 'open') return `<div class="notice">Compare the proposals below and accept one to get started.</div>`;
+    if (j.status === 'open') return j.offeredTo
+      ? `<div class="notice"><b>Your offer went to ${esc(LL.user(j.offeredTo).name)} only.</b> When they reply, accept the proposal below to get started.</div>`
+      : `<div class="notice">Compare the proposals below and accept one to get started.</div>`;
     if (j.status === 'assigned') return `<div class="notice wait"><b>Next step: pay ${LL.money(j.price)}.</b> PayPal holds the money until you approve the work.<br><a class="btn" style="margin-top:10px" href="checkout.html?job=${j.id}">Pay with PayPal</a></div>`;
     if (j.status === 'in_progress') return `<div class="notice">Your payment of ${LL.money(payment.amount)} is being held. ${esc(freelancer.name)} is working on the job.</div>`;
     if (j.status === 'delivered') return `<div class="notice wait"><b>${esc(freelancer.name)} has delivered the work.</b> Approve it to release the payment.<br><button class="btn" style="margin-top:10px" data-action="release">Approve work and release payment</button></div>`;
@@ -38,9 +40,11 @@ function actionPanel(j, me, ctx) {
       : `<div class="notice"><b>Paid out: ${LL.money(payment.payout)}.</b> Your first job was fee-free, so you kept the full amount.</div>`;
   }
 
-  if (me.role === 'freelancer' && j.status === 'open') {
+  // A private offer can only be answered by the freelancer it was sent to.
+  if (me.role === 'freelancer' && j.status === 'open' && (!j.offeredTo || j.offeredTo === me.id)) {
     if (myProposal) return `<div class="notice">You offered ${LL.money(myProposal.amount)} in ${myProposal.days} days. The customer has not chosen yet.</div>`;
-    return `<form class="card" id="proposal-form"><h3>Send a proposal</h3>
+    return `${j.offeredTo ? `<div class="notice"><b>${esc(LL.user(j.customerId).business)} offered you this job directly.</b> Reply with your price and timeframe.</div>` : ''}
+      <form class="card" id="proposal-form"><h3>Send a proposal</h3>
       <div class="field-row">
         <div class="field"><label for="amount">Your price (AUD)</label><input type="number" id="amount" required min="50" step="10" value="${j.budget}"></div>
         <div class="field"><label for="days">Days to deliver</label><input type="number" id="days" required min="1" value="7"></div>
@@ -52,6 +56,15 @@ function actionPanel(j, me, ctx) {
 
   if (myProposal && myProposal.status === 'declined') return `<div class="notice wait">The customer chose another freelancer for this job.</div>`;
   return '';
+}
+
+// Shown to the customer once a job is finished: an invitation to hire the same freelancer again.
+function hireAgain(f) {
+  const first = esc(f.name.split(' ')[0]);
+  return `<div class="promo">
+    <div><h2>Did you like working with ${first}?</h2><p>Consider hiring ${first} again. Your job offer goes straight to ${first}.</p></div>
+    <span class="spacer"></span><a class="btn" href="post-job.html?offer=${f.id}">Send a job offer</a>
+  </div>`;
 }
 
 // ===== 2. The list of proposals (only the job's owner sees the details) =====
@@ -93,15 +106,16 @@ function render() {
 
   document.title = j.title + ' | LocalLance';
   main.innerHTML = `
-    ${LL.param('posted') && j.status === 'open' ? '<div class="notice"><b>Your job is live.</b> Freelancers can now send proposals.</div>' : ''}
+    ${LL.param('posted') && j.status === 'open' && !j.offeredTo ? '<div class="notice"><b>Your job is live.</b> Freelancers can now send proposals.</div>' : ''}
     <div class="card">
-      <div class="row"><span class="badge">${esc(LL.service(j.category).name)}</span>${j.onsite ? '<span class="badge solid">On site</span>' : ''}${LLUI.statusBadge(j.status)}<span class="spacer"></span><span class="price">${LL.money(j.price || j.budget)}</span></div>
+      <div class="row"><span class="badge">${esc(LL.service(j.category).name)}</span>${j.onsite ? '<span class="badge solid">On site</span>' : ''}${j.offeredTo && j.status === 'open' ? '<span class="badge ok">Private offer</span>' : LLUI.statusBadge(j.status)}<span class="spacer"></span><span class="price">${LL.money(j.price || j.budget)}</span></div>
       <h1 style="margin-top:12px">${esc(j.title)}</h1>
       <p>${esc(j.description)}</p>
       <div class="row small muted"><span>${esc(j.suburb)}, needed by ${j.deadline}, posted ${LL.daysAgo(j.postedAt)}</span></div>
       <div class="steps">${STEPS.map((label, i) => `<div class="step ${i < step ? 'done' : i === step ? 'now' : ''}">${i + 1}. ${label}</div>`).join('')}</div>
     </div>
     ${actionPanel(j, me, ctx)}
+    ${ctx.isOwner && j.status === 'completed' ? hireAgain(freelancer) : ''}
     ${ctx.review ? `<div class="card"><h3>Customer review</h3><div class="stars">${'&#9733;'.repeat(ctx.review.rating)}</div><p class="muted">${esc(ctx.review.text)}</p></div>` : ''}
     ${proposalList(j, ctx)}`;
 

@@ -28,6 +28,15 @@ document.getElementById('category').innerHTML = LL_SERVICES.map(s => `<option va
 const form = document.getElementById('signup-form');
 const role = () => form.querySelector('input[name=role]:checked').value;
 
+// A freelancer's hourly rate cannot be below the national minimum wage.
+const rate = document.getElementById('rate');
+const lowest = LL.money(LL.MIN_RATE);
+document.getElementById('rate-hint').textContent = `Hourly rates start at ${lowest}, the Australian national minimum wage.`;
+form.addEventListener('input', () => {
+  const tooLow = role() === 'freelancer' && Number(rate.value) < LL.MIN_RATE;
+  rate.setCustomValidity(tooLow ? `Your hourly rate must be at least ${lowest}, the Australian national minimum wage.` : '');
+});
+
 // Show the fields that belong to the chosen role.
 form.addEventListener('change', () => {
   document.getElementById('customer-fields').classList.toggle('hidden', role() !== 'customer');

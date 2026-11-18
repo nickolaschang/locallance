@@ -19,8 +19,7 @@ document.getElementById('promo').innerHTML = LLUI.promo(LL.state.ads[0]);
 // ===== 2. Draw the list =====
 function render() {
   const words = text.value.trim().toLowerCase();
-  const jobs = LL.state.jobs
-    .filter(j => j.status === 'open')
+  const jobs = LL.openJobs()
     .filter(j => !words || (j.title + ' ' + j.description).toLowerCase().includes(words))
     .filter(j => !category.value || j.category === category.value)
     .filter(j => !suburb.value || j.suburb === suburb.value)

@@ -4,7 +4,7 @@ LLUI.mount('services');
 
 document.getElementById('service-list').innerHTML = LL_SERVICES.map(s => {
   const people = LL.freelancers().filter(f => f.category === s.id).length;
-  const jobs = LL.state.jobs.filter(j => j.category === s.id && j.status === 'open').length;
+  const jobs = LL.openJobs().filter(j => j.category === s.id).length;
   return `<div class="item service-row" id="${s.id}">
     <span class="icon-box">${LLUI.icon(s.icon)}</span>
     <span><b>${s.name}</b><br><span class="muted">${s.blurb}</span></span>

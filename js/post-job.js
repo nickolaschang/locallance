@@ -16,7 +16,17 @@ if (!me) {
   suburb.innerHTML = Object.keys(LL_SUBURBS).map(name => `<option>${name}</option>`).join('');
   suburb.value = me.suburb;
 
-  // ===== 2. Save the job and go to its page =====
+  // ===== 2. A private offer: post-job.html?offer=f1 sends the job to that freelancer only =====
+  const offerTo = LL.user(LL.param('offer'));
+  if (offerTo) {
+    const first = offerTo.name.split(' ')[0];
+    document.getElementById('page-heading').textContent = 'Send a job offer to ' + offerTo.name;
+    document.getElementById('page-lead').textContent = `Only ${first} will see this offer. ${first} replies with a price and a timeframe.`;
+    document.getElementById('submit-btn').textContent = 'Send job offer';
+    document.getElementById('category').value = offerTo.category;
+  }
+
+  // ===== 3. Save the job and go to its page =====
   document.getElementById('job-form').addEventListener('submit', event => {
     event.preventDefault();
     const job = LL.postJob({
@@ -26,7 +36,8 @@ if (!me) {
       budget: Number(document.getElementById('budget').value),
       suburb: suburb.value,
       deadline: document.getElementById('deadline').value,
-      onsite: document.getElementById('onsite').checked
+      onsite: document.getElementById('onsite').checked,
+      offeredTo: offerTo ? offerTo.id : null
     });
     location.href = 'job.html?id=' + job.id + '&posted=1';
   });

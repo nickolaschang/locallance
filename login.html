@@ -44,9 +44,10 @@
           <div class="field"><label for="category">Main service</label><select id="category"></select></div>
         </div>
         <div class="field-row">
-          <div class="field"><label for="rate">Hourly rate (AUD)</label><input type="number" id="rate" min="20" value="50"></div>
+          <div class="field"><label for="rate">Hourly rate (AUD)</label><input type="number" id="rate" step="0.01" value="50"></div>
           <div class="field"><label for="abn">ABN (11 digits)</label><input type="text" id="abn" placeholder="00 000 000 000"></div>
         </div>
+        <p class="hint" id="rate-hint"></p>
         <p class="hint">An 11-digit ABN is marked as verified. In the real product it would be checked against ABN Lookup.</p>
         <div class="field"><label for="bio">About you</label><textarea id="bio" placeholder="What do you do, and for whom?"></textarea></div>
       </div>

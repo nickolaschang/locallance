@@ -63,8 +63,8 @@ const LLUI = (() => {
   const statusBadge = status => `<span class="badge ${STATUS[status][1]}">${STATUS[status][0]}</span>`;
 
   // ----- header and footer -----
-  // Jobs that are waiting on this user to do something (the number on the bell).
-  const waitingOn = me => LL.state.jobs.filter(j => {
+  // Jobs that are waiting on this user to do something, plus job offers they have not replied to (the number on the bell).
+  const waitingOn = me => LL.offersFor(me.id).length + LL.state.jobs.filter(j => {
     if (me.role === 'customer' && j.customerId === me.id) {
       return (j.status === 'open' && LL.proposalsFor(j.id).length) || j.status === 'assigned' || j.status === 'delivered' || (j.status === 'completed' && !LL.reviewOf(j.id));
     }
@@ -229,11 +229,11 @@ const LLUI = (() => {
         ${lx < W - 30 && ly > 12 ? `<text x="${lx.toFixed(1)}" y="${ly.toFixed(1)}" font-size="11" fill="#6B7A90">${km} km</text>` : ''}`;
     }).join('');
     // Drawn last to first, so pin 1 (top of the list) sits on top.
-    const dots = pins.map((p, i) => `<g><title>${i + 1}. ${esc(list[i].name)}, ${esc(list[i].suburb)}</title>
+    const dots = pins.map((p, i) => `<g data-f="${list[i].id}">
         <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="11" fill="${BLUE}" stroke="#fff" stroke-width="2"/>
         <text x="${p.x.toFixed(1)}" y="${(p.y + 4).toFixed(1)}" font-size="12" font-weight="600" fill="#fff" text-anchor="middle">${i + 1}</text></g>`).reverse().join('');
 
-    return `<svg class="map" viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of freelancers around ${esc(home)}" font-family="Bahnschrift, 'DIN Alternate', 'Segoe UI', sans-serif">
+    return `<svg class="map" data-home="${esc(home)}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Map of freelancers around ${esc(home)}" font-family="Bahnschrift, 'DIN Alternate', 'Segoe UI', sans-serif">
       ${showBay ? `<polygon points="${bay}" fill="#D5E3F5"/><text x="${bayLabel.x.toFixed(1)}" y="${bayLabel.y.toFixed(1)}" font-size="12" fill="#6B7A90" text-anchor="middle">Port Phillip Bay</text>` : ''}
       ${rings}
       ${dots}
@@ -242,6 +242,36 @@ const LLUI = (() => {
       <text x="33" y="${H - 15}" font-size="13" font-weight="600" fill="${INK}" stroke="#EEF2F7" stroke-width="4" style="paint-order:stroke">You: ${esc(home)}</text>
     </svg>`;
   };
+
+  // ----- map tooltip -----
+  // Hovering a numbered pin shows who it is. One tooltip is shared by every map.
+  const tip = document.createElement('div');
+  tip.className = 'map-tip';
+  tip.hidden = true;
+  document.body.appendChild(tip);
+
+  document.addEventListener('mouseover', event => {
+    const dot = event.target.closest('.map [data-f]');
+    tip.hidden = !dot;
+    if (!dot) return;
+
+    const f = LL.user(dot.dataset.f);
+    const home = dot.closest('.map').dataset.home;
+    tip.innerHTML = `${avatar(f, 44)}<span>
+        <b>${esc(f.name)} ${tick(f)}</b>
+        <span class="muted">${esc(f.title)}</span>
+        <span class="metas">${meta('place', esc(f.suburb) + ', ' + LL.distanceKm(home, f.suburb) + ' km away')}</span>
+        <span class="metas">${stars(f)} ${LL.money(f.rate)}/hr</span>
+      </span>`;
+
+    // Sit above the pin (below it when the page header is in the way) and stay inside the window.
+    const at = dot.getBoundingClientRect();
+    const half = tip.offsetWidth / 2;
+    const x = Math.max(half + 8, Math.min(document.documentElement.clientWidth - half - 8, at.left + at.width / 2));
+    const above = at.top - tip.offsetHeight - 8;
+    tip.style.left = x + scrollX + 'px';
+    tip.style.top = (above < 70 ? at.bottom + 8 : above) + scrollY + 'px';
+  });
 
   return { esc, pin, icon, meta, tick, avatar, logo, stars, verified, statusBadge, mount, jobRow, freelancerRow, freelancerCard, promo, empty, needLogin, map };
 })();

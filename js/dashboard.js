@@ -17,7 +17,7 @@ function customerView(me) {
 
   const nextStep = j => {
     const count = LL.proposalsFor(j.id).length;
-    if (j.status === 'open') return count ? `<a href="job.html?id=${j.id}">Review ${count} proposal${count === 1 ? '' : 's'}</a>` : 'Waiting for proposals';
+    if (j.status === 'open') return count ? `<a href="job.html?id=${j.id}">Review ${count} proposal${count === 1 ? '' : 's'}</a>` : j.offeredTo ? `Waiting for ${esc(LL.user(j.offeredTo).name)} to reply` : 'Waiting for proposals';
     if (j.status === 'assigned') return `<a href="checkout.html?job=${j.id}">Pay to start</a>`;
     if (j.status === 'in_progress') return 'Work in progress';
     if (j.status === 'delivered') return `<a href="job.html?id=${j.id}">Approve and release payment</a>`;
@@ -44,6 +44,7 @@ function customerView(me) {
 function freelancerView(me) {
   const jobs = LL.state.jobs.filter(j => j.freelancerId === me.id);
   const active = jobs.filter(j => j.status !== 'completed');
+  const offers = LL.offersFor(me.id);
   const proposals = LL.state.proposals.filter(p => p.freelancerId === me.id && p.status !== 'accepted');
   const payments = LL.state.payments.filter(p => jobs.some(j => j.id === p.jobId));
   const total = status => payments.filter(p => p.status === status).reduce((sum, p) => sum + p.payout, 0);
@@ -74,6 +75,12 @@ function freelancerView(me) {
         <p>${me.promoted ? 'You appear at the top of search results and on the home page.' : 'Promoted freelancers appear at the top of search results. Demo only, nothing is charged.'}</p></div>
       <span class="spacer"></span><button class="btn ghost" id="promote-btn">${me.promoted ? 'Stop promoting' : 'Promote my profile'}</button>
     </div>
+    ${offers.length ? `<div class="card"><h3>Job offers sent to you</h3>
+      <div class="table-wrap"><table>
+        <tr><th>Job</th><th>Customer</th><th>Budget</th><th>Next step</th></tr>
+        ${offers.map(j => `<tr><td>${jobLink(j)}</td><td>${esc(LL.user(j.customerId).business)}</td><td>${LL.money(j.budget)}</td><td><a href="job.html?id=${j.id}">Reply to the offer</a></td></tr>`).join('')}
+      </table></div>
+    </div>` : ''}
     <div class="card"><h3>Active jobs</h3>
       ${active.length ? `<div class="table-wrap"><table>
         <tr><th>Job</th><th>Customer</th><th>Status</th><th>You receive</th><th>Next step</th></tr>

@@ -4,6 +4,7 @@
 const LL = (() => {
   const KEY = 'locallance-demo-v1';
   const FEE_RATE = 0.08; // flat 8% fee, taken from the freelancer's payout
+  const MIN_RATE = 26.44; // lowest hourly rate a freelancer can set: the national minimum wage from 1 July 2026
 
   const state = JSON.parse(localStorage.getItem(KEY)) || JSON.parse(JSON.stringify(LL_SEED));
   const save = () => localStorage.setItem(KEY, JSON.stringify(state));
@@ -45,6 +46,12 @@ const LL = (() => {
   const reviewsFor = userId => state.reviews.filter(r => r.toId === userId);
   const reviewOf = jobId => state.reviews.find(r => r.jobId === jobId);
   const messagesFor = jobId => state.messages.filter(m => m.jobId === jobId);
+
+  // Jobs every freelancer can see. A private offer (offeredTo) is only shown to the freelancer it was sent to.
+  const openJobs = () => state.jobs.filter(j => j.status === 'open' && !j.offeredTo);
+  // Private offers this freelancer has not replied to yet.
+  const offersFor = freelancerId => state.jobs.filter(j =>
+    j.offeredTo === freelancerId && j.status === 'open' && !proposalsFor(j.id).some(p => p.freelancerId === freelancerId));
 
   // ----- the fee -----
   // New freelancers keep 100% of their first job: there is no fee if they have never
@@ -130,8 +137,8 @@ const LL = (() => {
   };
 
   return {
-    state, FEE_RATE, money, param, feeFor, daysAgo, distanceKm,
-    user, me, job, service, freelancers, proposalsFor, paymentFor, reviewsFor, reviewOf, messagesFor,
+    state, FEE_RATE, MIN_RATE, money, param, feeFor, daysAgo, distanceKm,
+    user, me, job, service, freelancers, proposalsFor, paymentFor, reviewsFor, reviewOf, messagesFor, openJobs, offersFor,
     login, logout, reset, signUp, setPromoted,
     postJob, sendProposal, acceptProposal, pay, markDelivered, releasePayment, addReview, sendMessage, saveContact
   };

@@ -5,7 +5,7 @@ LLUI.mount('home');
 const RADIUS_KM = 10;
 const suburbSelect = document.getElementById('finder-suburb');
 const serviceSelect = document.getElementById('finder-service');
-const openJobs = LL.state.jobs.filter(j => j.status === 'open');
+const openJobs = LL.openJobs();
 const released = LL.state.payments.filter(p => p.status === 'released');
 const paidOut = LL.money(released.reduce((sum, p) => sum + p.payout, 0));
 
