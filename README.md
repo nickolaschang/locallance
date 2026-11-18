@@ -25,10 +25,15 @@ There are no passwords. The **Log in** page lists ready-made accounts.
 5. **Pay**: click *Pay with PayPal* and confirm. The payment is held, not paid out.
 6. **Log in as Liam**: open the job and click *Mark as delivered*.
 7. **Log in as Sofia**: click *Approve work and release payment*, then leave a review.
+8. **Hire again**: the finished job now asks *Did you like working with Liam?* Click *Send a job offer* and fill in the form. The offer is private: only Liam sees it, on his dashboard, and it never appears in *Find jobs*. Log in as Liam to reply with a price, then the same steps follow.
 
 Jobs at every stage are already in the demo data, so any step can also be shown on its own.
 
-To see the fee-free first job, create a new freelancer account on the **Log in** page and take a job through to payment. The fee is $0 on that job and 8% on every job after it.
+Other things to show:
+
+- **Fee-free first job**: create a new freelancer account on the **Log in** page and take a job through to payment. The fee is $0 on that job and 8% on every job after it.
+- **Minimum hourly rate**: on the **Log in** page, try to create a freelancer with an hourly rate under $26.44. The site refuses it, because that is the Australian national minimum wage from 1 July 2026.
+- **Map details**: on **Find freelancers**, hover a numbered pin on the map to see that freelancer's photo, distance, rating and hourly rate.
 
 ## Where the required items are
 
@@ -40,7 +45,7 @@ To see the fee-free first job, create a new freelancer account on the **Log in**
 | Marketing and promotion | Promotion banners (home, jobs, services, dashboard) and promoted freelancer listings |
 | List of available services | `services.html` and the home page |
 | Link to social media | Footer and the Contact us page |
-| Location maps | Freelancer search map, freelancer profiles, Contact us page |
+| Location maps | Freelancer search map (hover a pin for details), freelancer profiles, Contact us page |
 | Attractive graphics | Icons, avatars, hero panel, job progress steps, map |
 | Disclaimer | Footer of every page |
 
