@@ -46,6 +46,15 @@ const LL = (() => {
   const reviewOf = jobId => state.reviews.find(r => r.jobId === jobId);
   const messagesFor = jobId => state.messages.filter(m => m.jobId === jobId);
 
+  // ----- the fee -----
+  // New freelancers keep 100% of their first job: there is no fee if they have never
+  // completed a job and have never been paid through LocalLance before.
+  const firstJobFree = freelancerId =>
+    user(freelancerId).jobsDone === 0 && !state.payments.some(p => job(p.jobId).freelancerId === freelancerId);
+
+  // The fee LocalLance takes when this freelancer does a job of this price.
+  const feeFor = (amount, freelancerId) => firstJobFree(freelancerId) ? 0 : fee(amount);
+
   // ----- account actions -----
   const login = id => { state.sessionUserId = id; save(); };
   const logout = () => { state.sessionUserId = null; save(); };
@@ -85,7 +94,8 @@ const LL = (() => {
   // The customer pays the full job price. The money is held until they approve the work.
   const pay = jobId => {
     const j = job(jobId);
-    state.payments.push({ id: newId('pay'), jobId, amount: j.price, fee: fee(j.price), payout: j.price - fee(j.price), method: 'PayPal (demo)', status: 'held', paidAt: today(), releasedAt: null });
+    const cut = feeFor(j.price, j.freelancerId);
+    state.payments.push({ id: newId('pay'), jobId, amount: j.price, fee: cut, payout: j.price - cut, method: 'PayPal (demo)', status: 'held', paidAt: today(), releasedAt: null });
     j.status = 'in_progress';
     save();
   };
@@ -120,7 +130,7 @@ const LL = (() => {
   };
 
   return {
-    state, FEE_RATE, money, param, fee, daysAgo, distanceKm,
+    state, FEE_RATE, money, param, feeFor, daysAgo, distanceKm,
     user, me, job, service, freelancers, proposalsFor, paymentFor, reviewsFor, reviewOf, messagesFor,
     login, logout, reset, signUp, setPromoted,
     postJob, sendProposal, acceptProposal, pay, markDelivered, releasePayment, addReview, sendMessage, saveContact

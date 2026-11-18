@@ -48,6 +48,12 @@ function freelancerView(me) {
   const payments = LL.state.payments.filter(p => jobs.some(j => j.id === p.jobId));
   const total = status => payments.filter(p => p.status === status).reduce((sum, p) => sum + p.payout, 0);
 
+  // What the freelancer takes home: the recorded payout once paid, otherwise the price less the fee that would apply.
+  const receives = j => {
+    const payment = LL.paymentFor(j.id);
+    return payment ? payment.payout : j.price - LL.feeFor(j.price, me.id);
+  };
+
   const nextStep = j => {
     if (j.status === 'assigned') return 'Waiting for the customer to pay';
     if (j.status === 'in_progress') return `<a href="job.html?id=${j.id}">Mark as delivered</a>`;
@@ -71,7 +77,7 @@ function freelancerView(me) {
     <div class="card"><h3>Active jobs</h3>
       ${active.length ? `<div class="table-wrap"><table>
         <tr><th>Job</th><th>Customer</th><th>Status</th><th>You receive</th><th>Next step</th></tr>
-        ${active.map(j => `<tr><td>${jobLink(j)}</td><td>${esc(LL.user(j.customerId).business)}</td><td>${LLUI.statusBadge(j.status)}</td><td>${LL.money(j.price - LL.fee(j.price))}</td><td>${nextStep(j)}</td></tr>`).join('')}
+        ${active.map(j => `<tr><td>${jobLink(j)}</td><td>${esc(LL.user(j.customerId).business)}</td><td>${LLUI.statusBadge(j.status)}</td><td>${LL.money(receives(j))}</td><td>${nextStep(j)}</td></tr>`).join('')}
       </table></div>` : LLUI.empty('No active jobs. <a href="jobs.html">Find a job</a> and send a proposal.')}
     </div>
     <div class="card"><h3>My proposals</h3>
@@ -82,7 +88,7 @@ function freelancerView(me) {
     </div>
     <div class="card"><h3>Earnings</h3>
       ${payments.length ? `<div class="table-wrap"><table>
-        <tr><th>Job</th><th>Job price</th><th>Fee (8%)</th><th>You receive</th><th>Status</th></tr>
+        <tr><th>Job</th><th>Job price</th><th>LocalLance fee</th><th>You receive</th><th>Status</th></tr>
         ${payments.map(p => `<tr><td>${jobLink(LL.job(p.jobId))}</td><td>${LL.money(p.amount)}</td><td>${LL.money(p.fee)}</td><td><b>${LL.money(p.payout)}</b></td><td>${p.status === 'held' ? '<span class="badge wait">Held</span>' : '<span class="badge ok">Paid out ' + p.releasedAt + '</span>'}</td></tr>`).join('')}
       </table></div>` : LLUI.empty('Payments for your jobs will appear here.')}
     </div>`;

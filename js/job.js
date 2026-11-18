@@ -33,7 +33,9 @@ function actionPanel(j, me, ctx) {
     if (j.status === 'assigned') return `<div class="notice wait"><b>Your proposal was accepted.</b> Waiting for the customer to pay. Start once the payment shows as held.</div>`;
     if (j.status === 'in_progress') return `<div class="notice"><b>${LL.money(payment.amount)} is held for this job.</b> When the work is finished, mark it as delivered.<br><button class="btn" style="margin-top:10px" data-action="deliver">Mark as delivered</button></div>`;
     if (j.status === 'delivered') return `<div class="notice wait">Delivered. Waiting for the customer to approve the work.</div>`;
-    return `<div class="notice"><b>Paid out: ${LL.money(payment.payout)}.</b> That is ${LL.money(payment.amount)} less the 8% LocalLance fee of ${LL.money(payment.fee)}.</div>`;
+    return payment.fee
+      ? `<div class="notice"><b>Paid out: ${LL.money(payment.payout)}.</b> That is ${LL.money(payment.amount)} less the 8% LocalLance fee of ${LL.money(payment.fee)}.</div>`
+      : `<div class="notice"><b>Paid out: ${LL.money(payment.payout)}.</b> Your first job was fee-free, so you kept the full amount.</div>`;
   }
 
   if (me.role === 'freelancer' && j.status === 'open') {
@@ -112,7 +114,7 @@ function render() {
     </div>` : ''}
     ${ctx.payment ? `<div class="card"><h3>Payment</h3>
       <div class="summary-line"><span>Paid by customer</span><b>${LL.money(ctx.payment.amount)}</b></div>
-      <div class="summary-line"><span>LocalLance fee (8%)</span><span>${LL.money(ctx.payment.fee)}</span></div>
+      <div class="summary-line"><span>LocalLance fee (${ctx.payment.fee ? '8%' : 'first job free'})</span><span>${LL.money(ctx.payment.fee)}</span></div>
       <div class="summary-line"><span>Freelancer receives</span><b>${LL.money(ctx.payment.payout)}</b></div>
       <p class="small muted" style="margin-top:10px">${ctx.payment.method}, ${ctx.payment.status === 'held' ? 'held since ' + ctx.payment.paidAt : 'released on ' + ctx.payment.releasedAt}</p>
     </div>` : ''}
@@ -121,7 +123,12 @@ function render() {
   // Show the freelancer what they will take home as they type a price.
   const amount = document.getElementById('amount');
   if (amount) {
-    const hint = () => { document.getElementById('payout-hint').textContent = `You receive ${LL.money(amount.value - LL.fee(amount.value))} after the 8% fee of ${LL.money(LL.fee(amount.value))}. The customer pays no fee.`; };
+    const hint = () => {
+      const cut = LL.feeFor(amount.value, LL.me().id);
+      document.getElementById('payout-hint').textContent = cut
+        ? `You receive ${LL.money(amount.value - cut)} after the 8% fee of ${LL.money(cut)}. The customer pays no fee.`
+        : `Your first job is fee-free, so you receive the full ${LL.money(amount.value)}. The customer pays no fee.`;
+    };
     amount.addEventListener('input', hint);
     hint();
   }

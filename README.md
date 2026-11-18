@@ -28,6 +28,8 @@ There are no passwords. The **Log in** page lists ready-made accounts.
 
 Jobs at every stage are already in the demo data, so any step can also be shown on its own.
 
+To see the fee-free first job, create a new freelancer account on the **Log in** page and take a job through to payment. The fee is $0 on that job and 8% on every job after it.
+
 ## Where the required items are
 
 | Requirement | Where |

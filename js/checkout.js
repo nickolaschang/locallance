@@ -14,6 +14,8 @@ if (!me || me.id !== job.customerId) {
   box.innerHTML = `<div class="notice">This job has already been paid for. <a href="job.html?id=${job.id}">Back to the job</a></div>`;
 } else {
   const freelancer = LL.user(job.freelancerId);
+  const firstName = freelancer.name.split(' ')[0];
+  const cut = LL.feeFor(job.price, freelancer.id);
 
   // ===== 1. Order summary =====
   box.innerHTML = `
@@ -23,7 +25,9 @@ if (!me || me.id !== job.customerId) {
       <div class="summary-line"><span>Agreed job price</span><span>${LL.money(job.price)}</span></div>
       <div class="summary-line"><span>LocalLance fee for customers</span><span>${LL.money(0)}</span></div>
       <div class="summary-line total"><span>Total today</span><span>${LL.money(job.price)}</span></div>
-      <p class="small muted">${esc(freelancer.name.split(' ')[0])} receives ${LL.money(job.price - LL.fee(job.price))} after the flat 8% fee, once you approve the work.</p>
+      <p class="small muted">${cut
+        ? `${esc(firstName)} receives ${LL.money(job.price - cut)} after the flat 8% fee, once you approve the work.`
+        : `${esc(firstName)} receives the full ${LL.money(job.price)} once you approve the work. A freelancer's first job is fee-free.`}</p>
     </div>
     <div class="card" style="margin-top:20px" id="pay-box">
       <h3>Payment method</h3>
