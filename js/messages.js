@@ -18,8 +18,9 @@ function render(selectedId) {
   const threads = jobs.map(j => {
     const last = LL.messagesFor(j.id).slice(-1)[0];
     return `<a class="thread-link ${j.id === job.id ? 'active' : ''}" href="messages.html?job=${j.id}">
-      <b>${esc(other(j).name)}</b><div class="small muted">${esc(j.title)}</div>
-      <div class="small muted">${last ? esc(last.text.slice(0, 48)) : 'No messages yet'}</div></a>`;
+      ${LLUI.avatar(other(j), 42)}
+      <span><b>${esc(other(j).name)}</b><span class="small muted clip">${esc(j.title)}</span>
+      <span class="small muted clip">${last ? esc(last.text.slice(0, 40)) : 'No messages yet'}</span></span></a>`;
   }).join('');
 
   const bubbles = LL.messagesFor(job.id).map(m =>

@@ -14,7 +14,7 @@ document.getElementById('profile').innerHTML = `
   <div class="card">
     <div class="list-item">${LLUI.avatar(f, 84)}
       <div class="body">
-        <div class="row"><h1 style="margin:0">${esc(f.name)}</h1>${f.promoted ? '<span class="badge solid">Promoted</span>' : ''}</div>
+        <div class="row"><h1 style="margin:0">${esc(f.name)} ${LLUI.tick(f)}</h1>${f.promoted ? '<span class="badge solid">Promoted</span>' : ''}</div>
         <p class="muted">${esc(f.title)}, ${esc(f.suburb)}</p>
         <div class="row">${LLUI.stars(f)}<span class="muted">${f.jobsDone} jobs completed</span>${LLUI.verified(f)}</div>
       </div>

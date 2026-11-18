@@ -1,4 +1,4 @@
-// LocalLance shared interface pieces: header, footer, list rows, the location map,
+// LocalLance shared interface pieces: header, footer, list rows, cards, the location map,
 // and the small HTML builders every page reuses.
 
 const LLUI = (() => {
@@ -10,6 +10,7 @@ const LLUI = (() => {
 
   const pin = (size, color) => `<svg width="${size}" height="${size * 1.25}" viewBox="0 0 48 60" aria-hidden="true"><path d="M24 2C11.85 2 2 11.85 2 24c0 15.5 22 34 22 34s22-18.5 22-34C46 11.85 36.15 2 24 2z" fill="${color}"/><circle cx="24" cy="24" r="8" fill="#fff"/></svg>`;
 
+  // ----- icons (simple line drawings, so there are no icon files to load) -----
   const icons = {
     code: '<path d="M9 8l-5 4 5 4M15 8l5 4-5 4" />',
     pen: '<path d="M4 20l4-1 11-11-3-3L5 16l-1 4z" />',
@@ -17,17 +18,36 @@ const LLUI = (() => {
     megaphone: '<path d="M4 10v4h3l8 4V6L7 10H4zM18 9a4 4 0 010 6" />',
     text: '<path d="M5 6h14M5 10h14M5 14h9M5 18h11" />',
     calc: '<rect x="5" y="3" width="14" height="18" rx="2" /><path d="M8 7h8M8 12h2M12 12h2M8 16h2M12 16h2" />',
-    check: '<path d="M5 12.5l4.5 4.5L19 7.5" />'
+    check: '<path d="M5 12.5l4.5 4.5L19 7.5" />',
+    place: '<path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" />',
+    clock: '<circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" />',
+    briefcase: '<rect x="3" y="7" width="18" height="13" rx="2" /><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18" />',
+    building: '<path d="M4 21V5a1 1 0 011-1h9a1 1 0 011 1v16M15 10h4a1 1 0 011 1v10M2 21h20M8 8h3M8 12h3M8 16h3" />',
+    bell: '<path d="M6 16V11a6 6 0 0112 0v5l2 2H4l2-2zM10 20a2 2 0 004 0" />',
+    mail: '<rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" />',
+    chat: '<path d="M4 5h16v11H9l-5 4V5z" />',
+    search: '<circle cx="11" cy="11" r="7" /><path d="M16.5 16.5L21 21" />'
   };
   const icon = (name, size = 22) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
 
-  // Avatars show initials on one of a few blues and grays, chosen from the person's name.
-  const AVATAR_COLOURS = [BLUE, '#34455C', '#3E7CCB', '#5B6B82', '#0E3D82'];
-  const avatar = (u, size = 44) => {
-    const initials = u.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-    const colour = AVATAR_COLOURS[[...u.name].reduce((sum, c) => sum + c.charCodeAt(0), 0) % AVATAR_COLOURS.length];
-    return `<span class="avatar" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.38)}px;background:${colour}">${esc(initials)}</span>`;
-  };
+  // A small icon followed by text, e.g. a pin and a suburb.
+  const meta = (name, text) => `<span class="meta-item">${icon(name, 15)} ${text}</span>`;
+
+  // The blue tick shown beside ABN-verified freelancers.
+  const tick = u => u.abnVerified ? `<span class="tick" title="ABN verified">${icon('check', 11)}</span>` : '';
+
+  // ----- pictures of people and businesses -----
+  const SHADES = [BLUE, '#34455C', '#3E7CCB', '#5B6B82', '#0E3D82'];
+  const shade = text => SHADES[[...text].reduce((sum, c) => sum + c.charCodeAt(0), 0) % SHADES.length];
+  const initials = text => text.split(' ').filter(w => /[a-z]/i.test(w[0])).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+
+  // The demo people (ids c1-c6 and f1-f12) have a photo in img/people. Anyone who signs up gets their initials.
+  const avatar = (u, size = 44) => /^[cf]\d+$/.test(u.id)
+    ? `<img class="avatar" src="img/people/${u.id}.jpg" alt="" width="${size}" height="${size}" style="width:${size}px;height:${size}px">`
+    : `<span class="avatar" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.38)}px;background:${shade(u.name)}">${esc(initials(u.name))}</span>`;
+
+  // A square "logo" for a customer's business, made from its initials.
+  const logo = (u, size = 46) => `<span class="logo-tile" style="width:${size}px;height:${size}px;font-size:${Math.round(size * 0.36)}px;background:${shade(u.business)}">${esc(initials(u.business))}</span>`;
 
   const starIcon = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l3 6.6 7 .8-5.2 4.8 1.5 7-6.3-3.7-6.3 3.7 1.5-7L2 9.4l7-.8z"/></svg>';
   const stars = u => u.jobsDone || u.rating ? `<span class="stars">${starIcon} ${Number(u.rating).toFixed(1)}</span>` : '<span class="badge">New</span>';
@@ -43,12 +63,29 @@ const LLUI = (() => {
   const statusBadge = status => `<span class="badge ${STATUS[status][1]}">${STATUS[status][0]}</span>`;
 
   // ----- header and footer -----
+  // Jobs that are waiting on this user to do something (the number on the bell).
+  const waitingOn = me => LL.state.jobs.filter(j => {
+    if (me.role === 'customer' && j.customerId === me.id) {
+      return (j.status === 'open' && LL.proposalsFor(j.id).length) || j.status === 'assigned' || j.status === 'delivered' || (j.status === 'completed' && !LL.reviewOf(j.id));
+    }
+    return me.role === 'freelancer' && j.freelancerId === me.id && j.status === 'in_progress';
+  }).length;
+
+  // Conversations where the other person wrote last (the number on the envelope).
+  const unanswered = me => LL.state.jobs.filter(j => {
+    if (!j.freelancerId || (j.customerId !== me.id && j.freelancerId !== me.id)) return false;
+    const last = LL.messagesFor(j.id).slice(-1)[0];
+    return last && last.fromId !== me.id;
+  }).length;
+
   const header = active => {
     const me = LL.me();
     const link = (key, href, label) => `<a href="${href}" class="${active === key ? 'active' : ''}">${label}</a>`;
+    const iconLink = (key, href, name, count, label) => `<a class="icon-btn ${active === key ? 'active' : ''}" href="${href}" title="${label}" aria-label="${label}">${icon(name, 21)}${count ? `<span class="count">${count}</span>` : ''}</a>`;
     const account = me
-      ? `${link('dashboard', 'dashboard.html', 'Dashboard')}${link('messages', 'messages.html', 'Messages')}
-         <span class="user-chip">${avatar(me, 30)} ${esc(me.name.split(' ')[0])}</span>
+      ? `${iconLink('dashboard', 'dashboard.html', 'bell', waitingOn(me), waitingOn(me) + ' waiting on you')}
+         ${iconLink('messages', 'messages.html', 'mail', unanswered(me), unanswered(me) + ' to reply to')}
+         <a class="user-chip" href="dashboard.html">${avatar(me, 34)} ${esc(me.name.split(' ')[0])}</a>
          <button class="link-btn" id="logout-btn">Log out</button>`
       : `${link('login', 'login.html', 'Log in')}<a class="btn small" href="post-job.html">Post a job</a>`;
     return `<header class="site-header"><div class="wrap">
@@ -58,9 +95,10 @@ const LLUI = (() => {
         ${link('freelancers', 'freelancers.html', 'Find freelancers')}
         ${link('services', 'services.html', 'Services')}
         ${link('contact', 'contact.html', 'Contact us')}
+        ${me ? link('dashboard', 'dashboard.html', 'Dashboard') : ''}
       </nav>
       <span class="spacer"></span>
-      <nav class="nav">${account}</nav>
+      <nav class="nav account">${account}</nav>
     </div></header>`;
   };
 
@@ -82,35 +120,62 @@ const LLUI = (() => {
     document.getElementById('reset-btn').addEventListener('click', () => { if (confirm('Reset all demo data to how it started?')) LL.reset(); });
   };
 
-  // ----- list rows -----
-  // One open job as a row: what it is, who posted it, how busy it is, and the budget.
+  // ----- list rows and cards -----
+  // One open job as a row: the business, what it needs, where and when, and the budget.
   const jobRow = j => {
     const customer = LL.user(j.customerId);
-    const service = LL.service(j.category);
     const count = LL.proposalsFor(j.id).length;
     return `<a class="item job" href="job.html?id=${j.id}">
-      <span class="icon-box">${icon(service.icon)}</span>
-      <span><b class="clip">${esc(j.title)}</b><span class="muted clip">${esc(service.name)}${j.onsite ? ', on site' : ''}</span></span>
-      <span class="where"><span class="clip">${esc(customer.business)}</span><span class="muted clip">${esc(j.suburb)}</span></span>
-      <span class="when"><span class="clip">${count} proposal${count === 1 ? '' : 's'}</span><span class="muted clip">Posted ${LL.daysAgo(j.postedAt)}</span></span>
+      ${logo(customer)}
+      <span>
+        <b class="clip">${esc(j.title)}</b>
+        <span class="metas">
+          ${meta('building', esc(customer.business))}
+          ${meta('place', esc(j.suburb) + (j.onsite ? ', on site' : ''))}
+          ${meta('briefcase', esc(LL.service(j.category).name))}
+          ${meta('clock', 'Posted ' + LL.daysAgo(j.postedAt))}
+          ${meta('chat', count + ' proposal' + (count === 1 ? '' : 's'))}
+        </span>
+      </span>
       <span class="budget">${LL.money(j.budget)}</span>
+      <span class="btn small ghost go">View job</span>
     </a>`;
   };
 
   // One freelancer as a row. `rank` is the number shown on the matching map pin.
   const freelancerRow = (f, fromSuburb, rank) => `<a class="item person" href="freelancer.html?id=${f.id}">
       <span class="rank">${rank}</span>
-      ${avatar(f, 44)}
-      <span><b class="clip">${esc(f.name)}${f.promoted ? ' <span class="badge solid">Promoted</span>' : ''}</b><span class="muted clip">${esc(f.title)}${f.skills.length ? ': ' + esc(f.skills.slice(0, 3).join(', ')) : ''}</span></span>
-      <span class="where"><span class="clip">${esc(f.suburb)}</span><span class="muted clip">${LL.distanceKm(fromSuburb, f.suburb)} km away</span></span>
-      <span class="rating">${stars(f)} <span class="muted small">${f.jobsDone} jobs</span></span>
+      ${avatar(f, 52)}
+      <span>
+        <b class="clip">${esc(f.name)} ${tick(f)}${f.promoted ? ' <span class="badge solid">Promoted</span>' : ''}</b>
+        <span class="muted clip">${esc(f.title)}</span>
+        <span class="metas">
+          ${meta('place', esc(f.suburb) + ', ' + LL.distanceKm(fromSuburb, f.suburb) + ' km away')}
+          ${meta('briefcase', f.jobsDone + ' jobs done')}
+        </span>
+      </span>
+      <span class="rating">${stars(f)}</span>
       <span class="rate">${LL.money(f.rate)}<span class="muted small">/hr</span></span>
-      <span class="check-col">${verified(f)}</span>
+      <span class="btn small ghost go">View profile</span>
+    </a>`;
+
+  // One freelancer as a card, used for the "top rated" strip on the home page.
+  const freelancerCard = (f, fromSuburb) => `<a class="card person-card" href="freelancer.html?id=${f.id}">
+      ${avatar(f, 84)}
+      <b>${esc(f.name)} ${tick(f)}</b>
+      <span class="muted">${esc(f.title)}</span>
+      <span>${stars(f)} <span class="muted small">${f.jobsDone} jobs</span></span>
+      <span class="facts">
+        <span><span class="muted small">Location</span><b>${esc(f.suburb)}</b></span>
+        <span><span class="muted small">Away</span><b>${LL.distanceKm(fromSuburb, f.suburb)} km</b></span>
+        <span><span class="muted small">Rate</span><b>${LL.money(f.rate)}/hr</b></span>
+      </span>
+      <span class="btn block">View profile</span>
     </a>`;
 
   const promo = ad => `<div class="promo">
       <div><div class="tag">Promotion, ${esc(ad.tag.toLowerCase())}</div><h2>${esc(ad.title)}</h2><p>${esc(ad.text)}</p></div>
-      <span class="spacer"></span><a class="btn ghost" href="${ad.link}">${esc(ad.cta)}</a>
+      <span class="spacer"></span><a class="btn" href="${ad.link}">${esc(ad.cta)}</a>
     </div>`;
 
   const empty = text => `<div class="empty">${text}</div>`;
@@ -178,5 +243,5 @@ const LLUI = (() => {
     </svg>`;
   };
 
-  return { esc, pin, icon, avatar, stars, verified, statusBadge, mount, jobRow, freelancerRow, promo, empty, needLogin, map };
+  return { esc, pin, icon, meta, tick, avatar, logo, stars, verified, statusBadge, mount, jobRow, freelancerRow, freelancerCard, promo, empty, needLogin, map };
 })();

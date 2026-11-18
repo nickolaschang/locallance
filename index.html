@@ -10,43 +10,50 @@
 <div id="site-header"></div>
 
 <main>
-  <!-- The finder: choose a suburb and a service, and the map and list below update. -->
+  <!-- Hero: choose a suburb and a service. The counters and the "near you" section below update live. -->
   <section class="hero">
     <div class="wrap">
-      <div>
-        <h1>Local talent, job done.</h1>
-        <p class="lead">Hire ABN-verified freelancers from your own part of Melbourne. You pay only when you approve the work.</p>
-        <form class="finder" id="finder">
-          <div class="sentence">
-            <span>I'm in</span><select id="finder-suburb" aria-label="Your suburb"></select>
-            <span>and I need</span><select id="finder-service" aria-label="Service"><option value="">any service</option></select>
-          </div>
-          <p class="readout" id="finder-readout"></p>
-          <div class="row">
-            <a class="btn" id="finder-go" href="freelancers.html">See them all</a>
-            <a class="btn ghost" href="post-job.html">Post a job</a>
-          </div>
-        </form>
-        <div class="trust" id="trust"></div>
+      <h1>Local talent, job done.</h1>
+      <p class="lead">Hire ABN-verified freelancers from your own part of Melbourne. You pay only when you approve the work.</p>
+      <form class="searchbar" id="finder">
+        <label class="seg" id="seg-where"><span class="seg-label">Where are you?</span><select id="finder-suburb"></select></label>
+        <label class="seg" id="seg-what"><span class="seg-label">What do you need?</span><select id="finder-service"><option value="">Any service</option></select></label>
+        <a class="btn" id="finder-go" href="freelancers.html">Search</a>
+      </form>
+      <div class="counters" id="counters"></div>
+    </div>
+    <span class="credit">Photo: <a href="https://commons.wikimedia.org/wiki/File:AUS_Melbourne,_Central_Business_District,_Degraves_Street_001.jpg" target="_blank" rel="noopener">Degraves Street, Melbourne</a> by -wuppertaler, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>, cropped and toned</span>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head center"><h2>Popular services</h2><span class="muted">What small businesses ask for most</span></div>
+      <div class="cat-grid" id="services"></div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="wrap">
+      <div class="section-head"><h2 id="near-title">Freelancers near you</h2><span class="spacer"></span><a href="freelancers.html">Browse all freelancers</a></div>
+      <div class="cols near">
+        <div id="hero-map"></div>
+        <div id="near-list"></div>
       </div>
-      <div id="hero-map"></div>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap stack">
-      <div>
-        <div class="section-head"><h2 id="near-title">Nearest to you</h2><span class="spacer"></span><a href="freelancers.html">All freelancers</a></div>
-        <div id="near-list"></div>
-      </div>
+      <div class="section-head" style="margin-bottom:2px"><h2>Latest jobs</h2><span class="spacer"></span><a href="jobs.html">Browse all jobs</a></div>
+      <div class="list" id="latest-jobs"></div>
       <div id="promo"></div>
     </div>
   </section>
 
   <section class="section alt">
     <div class="wrap">
-      <div class="section-head"><h2>How it works</h2></div>
-      <div class="sequence" style="margin-top:30px">
+      <div class="section-head center"><h2>How it works</h2><span class="muted">From posting a job to paying for it, in three steps</span></div>
+      <div class="sequence" style="margin-top:34px">
         <div><h3>Post a job</h3><p>Free to post. Describe the work and your budget.</p></div>
         <div><h3>Pick a freelancer</h3><p>Compare ratings, past work and distance. Every freelancer is ABN-checked.</p></div>
         <div><h3>Pay on approval</h3><p>PayPal holds the money until you approve the work.</p></div>
@@ -55,24 +62,18 @@
   </section>
 
   <section class="section">
-    <div class="wrap stack loose">
-      <div>
-        <div class="section-head"><h2>Services</h2><span class="spacer"></span><a href="services.html">All services</a></div>
-        <div class="list two" id="services"></div>
-      </div>
-      <div>
-        <div class="section-head"><h2>Latest jobs</h2><span class="spacer"></span><a href="jobs.html">All jobs</a></div>
-        <div class="list" id="latest-jobs"></div>
-      </div>
+    <div class="wrap">
+      <div class="section-head center"><h2>Top rated freelancers</h2><span class="muted">Rated by the local businesses they worked for</span></div>
+      <div class="grid c4" id="top-rated"></div>
     </div>
   </section>
 
-  <section class="section alt">
+  <section class="section band">
     <div class="wrap">
       <div class="grid c4" id="stats"></div>
-      <div class="grid c2" style="margin-top:16px">
-        <div class="card dark"><h3>Need something done?</h3><p class="muted">Post a job for free and get proposals from verified locals.</p><a class="btn light" href="post-job.html">Post a job</a></div>
-        <div class="card"><h3>Are you a freelancer?</h3><p class="muted">Keep 92% of every job. Your first job is fee-free.</p><a class="btn" href="login.html">Join LocalLance</a></div>
+      <div class="row" style="margin-top:28px">
+        <a class="btn light" href="post-job.html">Post a job for free</a>
+        <a class="btn light" href="login.html">Join as a freelancer</a>
       </div>
     </div>
   </section>

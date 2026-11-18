@@ -42,6 +42,11 @@ Jobs at every stage are already in the demo data, so any step can also be shown 
 | Attractive graphics | Icons, avatars, hero panel, job progress steps, map |
 | Disclaimer | Footer of every page |
 
+## Image credits
+
+- Home page photo: [Degraves Street, Melbourne](https://commons.wikimedia.org/wiki/File:AUS_Melbourne,_Central_Business_District,_Degraves_Street_001.jpg) by -wuppertaler, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Cropped and toned to gray and blue.
+- Profile pictures in `img/people`: sample portraits from [randomuser.me](https://randomuser.me/), used here as placeholders for fictitious people. They do not show the people named on the site.
+
 ## Files
 
 - `index.html` and the other `.html` files: one per page.
