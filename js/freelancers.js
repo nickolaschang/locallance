@@ -10,52 +10,15 @@ const verifiedOnly = document.getElementById('f-verified');
 const sort = document.getElementById('f-sort');
 
 // ===== 1. Fill the dropdowns and read filters from the address bar =====
+// The home page finder links here with ?from=Suburb&km=10&category=web
 category.innerHTML += LL_SERVICES.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
 from.innerHTML = Object.keys(LL_SUBURBS).map(name => `<option>${name}</option>`).join('');
-from.value = LL.me() ? LL.me().suburb : 'Melbourne CBD';
+from.value = LL.param('from') || (LL.me() ? LL.me().suburb : 'Melbourne CBD');
+maxKm.value = LL.param('km') || '';
 text.value = LL.param('q') || '';
 category.value = LL.param('category') || '';
 
-// ===== 2. The map =====
-// Turns a suburb's latitude and longitude into a position on a 600 x 320 drawing.
-// About 12 pixels per kilometre, so the distance rings are true to scale.
-const PX_PER_KM = 12;
-function place(suburb) {
-  const [lat, lng] = LL_SUBURBS[suburb];
-  return { x: (lng - 144.62) / 0.54 * 560 + 20, y: (-37.72 - lat) / 0.20 * 280 + 20 };
-}
-
-function drawMap(list) {
-  const home = place(from.value);
-  const perSuburb = {};
-  list.forEach(f => { perSuburb[f.suburb] = (perSuburb[f.suburb] || 0) + 1; });
-
-  const rings = [5, 10, 20].map(km =>
-    `<circle cx="${home.x}" cy="${home.y}" r="${km * PX_PER_KM}" fill="none" stroke="#14213D" stroke-opacity="0.18" stroke-dasharray="4 5"/>
-     <text x="${home.x + km * PX_PER_KM - 4}" y="${home.y - 4}" font-size="10" fill="#44506A" text-anchor="end">${km} km</text>`).join('');
-
-  // Suburb names alternate above and below their pins so close neighbours do not overlap.
-  const pins = Object.keys(perSuburb).map((name, i) => {
-    const p = place(name);
-    return `<g><title>${perSuburb[name]} freelancer(s) in ${name}</title>
-      <circle cx="${p.x}" cy="${p.y}" r="10" fill="#157A52"/>
-      <text x="${p.x}" y="${p.y + 4}" font-size="11" font-weight="700" fill="#FDFDFB" text-anchor="middle">${perSuburb[name]}</text>
-      <text x="${p.x}" y="${i % 2 ? p.y - 14 : p.y + 22}" font-size="10" fill="#14213D" text-anchor="middle">${name}</text></g>`;
-  }).join('');
-
-  document.getElementById('map-holder').innerHTML = `
-    <svg class="map" viewBox="0 0 600 320" role="img" aria-label="Map of freelancers around ${from.value}">
-      <rect width="600" height="320" fill="#EAF1EC"/>
-      <path d="M150 320 L175 250 L250 215 L330 205 L385 225 L420 270 L430 320 Z" fill="#CFE3EE"/>
-      <text x="300" y="295" font-size="11" fill="#44506A" text-anchor="middle">Port Phillip Bay</text>
-      ${rings}
-      ${pins}
-      <circle cx="${home.x}" cy="${home.y}" r="6" fill="#14213D" stroke="#FDFDFB" stroke-width="2"/>
-      <text x="${home.x + 10}" y="${home.y - 10}" font-size="11" font-weight="700" fill="#14213D">You: ${from.value}</text>
-    </svg>`;
-}
-
-// ===== 3. Draw the list =====
+// ===== 2. Draw the map and the list =====
 function render() {
   const words = text.value.trim().toLowerCase();
   const list = LL.freelancers()
@@ -72,14 +35,15 @@ function render() {
       return a.km - b.km;
     });
 
-  drawMap(list);
+  // The numbers on the map pins match the numbers on the rows.
+  document.getElementById('map-holder').innerHTML = LLUI.map(list, from.value);
   document.getElementById('count').textContent = list.length + ' freelancer' + (list.length === 1 ? '' : 's') + ' found. Promoted profiles are shown first.';
   document.getElementById('freelancer-list').innerHTML = list.length
-    ? list.map(f => LLUI.freelancerCard(f, from.value)).join('')
+    ? `<div class="list">${list.map((f, i) => LLUI.freelancerRow(f, from.value, i + 1)).join('')}</div>`
     : LLUI.empty('No freelancers match those filters.');
 }
 
-// ===== 4. Redraw whenever a filter changes =====
+// ===== 3. Redraw whenever a filter changes =====
 document.getElementById('filters').addEventListener('input', render);
 document.getElementById('filters').addEventListener('submit', event => event.preventDefault());
 render();

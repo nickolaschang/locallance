@@ -7,7 +7,7 @@ const esc = LLUI.esc;
 // ===== 1. Demo accounts =====
 const accountRow = u => `<div class="list-item" style="padding:10px 0;border-top:1px solid var(--line);align-items:center">
     ${LLUI.avatar(u, 40)}
-    <div class="body"><b>${esc(u.name)}</b><div class="small muted">${esc(u.role === 'customer' ? u.business : u.title)} &middot; ${esc(u.suburb)}</div></div>
+    <div class="body"><b>${esc(u.name)}</b><div class="small muted">${esc(u.role === 'customer' ? u.business : u.title)}, ${esc(u.suburb)}</div></div>
     <button class="btn small ghost" data-login="${u.id}">Log in</button>
   </div>`;
 

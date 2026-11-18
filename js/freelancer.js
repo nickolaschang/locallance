@@ -14,8 +14,8 @@ document.getElementById('profile').innerHTML = `
   <div class="card">
     <div class="list-item">${LLUI.avatar(f, 84)}
       <div class="body">
-        <div class="row"><h1 style="margin:0">${esc(f.name)}</h1>${f.promoted ? '<span class="badge navy">Promoted</span>' : ''}</div>
-        <p class="muted">${esc(f.title)} &middot; ${esc(f.suburb)}</p>
+        <div class="row"><h1 style="margin:0">${esc(f.name)}</h1>${f.promoted ? '<span class="badge solid">Promoted</span>' : ''}</div>
+        <p class="muted">${esc(f.title)}, ${esc(f.suburb)}</p>
         <div class="row">${LLUI.stars(f)}<span class="muted">${f.jobsDone} jobs completed</span>${LLUI.verified(f)}</div>
       </div>
     </div>
@@ -55,6 +55,6 @@ document.getElementById('side').innerHTML = `
   </div>
   <div class="card">
     <h3>Location</h3>
-    <p class="muted">${esc(f.suburb)}, Victoria${km === null ? '' : ' &middot; ' + km + ' km from you'}</p>
+    <p class="muted">${esc(f.suburb)}, Victoria${km === null ? '' : ', ' + km + ' km from you'}</p>
     <iframe class="map-frame" src="${mapUrl}" title="Map of ${esc(f.suburb)}" loading="lazy"></iframe>
   </div>`;

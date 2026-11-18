@@ -23,7 +23,7 @@ function render(selectedId) {
   }).join('');
 
   const bubbles = LL.messagesFor(job.id).map(m =>
-    `<div class="bubble ${m.fromId === me.id ? 'mine' : ''}">${esc(m.text)}<div class="when">${esc(LL.user(m.fromId).name.split(' ')[0])} &middot; ${m.at}</div></div>`).join('');
+    `<div class="bubble ${m.fromId === me.id ? 'mine' : ''}">${esc(m.text)}<div class="when">${esc(LL.user(m.fromId).name.split(' ')[0])}, ${m.at}</div></div>`).join('');
 
   box.innerHTML = `<div class="cols side-left">
     <div class="card">${threads}</div>

@@ -29,7 +29,7 @@ function render() {
 
   document.getElementById('count').textContent = jobs.length + ' open job' + (jobs.length === 1 ? '' : 's');
   document.getElementById('job-list').innerHTML = jobs.length
-    ? jobs.map(LLUI.jobCard).join('')
+    ? `<div class="list">${jobs.map(LLUI.jobRow).join('')}</div>`
     : LLUI.empty('No jobs match those filters.');
 }
 

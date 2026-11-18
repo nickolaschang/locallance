@@ -3,21 +3,17 @@
 LLUI.mount('services');
 
 document.getElementById('service-list').innerHTML = LL_SERVICES.map(s => {
-  const people = LL.freelancers().filter(f => f.category === s.id);
-  const jobs = LL.state.jobs.filter(j => j.category === s.id && j.status === 'open');
-  return `<div class="card" id="${s.id}">
-    <div class="list-item">
-      <div class="icon-box">${LLUI.icon(s.icon)}</div>
-      <div class="body">
-        <h3>${s.name}</h3>
-        <p class="muted">${s.blurb}</p>
-        <p><b>From ${LL.money(s.from)}</b> &middot; ${people.length} freelancer${people.length === 1 ? '' : 's'} &middot; ${jobs.length} open job${jobs.length === 1 ? '' : 's'}</p>
-        <div class="row">
-          <a class="btn small" href="freelancers.html?category=${s.id}">Find freelancers</a>
-          <a class="btn small ghost" href="jobs.html?category=${s.id}">See jobs</a>
-        </div>
-      </div>
-    </div>
+  const people = LL.freelancers().filter(f => f.category === s.id).length;
+  const jobs = LL.state.jobs.filter(j => j.category === s.id && j.status === 'open').length;
+  return `<div class="item service-row" id="${s.id}">
+    <span class="icon-box">${LLUI.icon(s.icon)}</span>
+    <span><b>${s.name}</b><br><span class="muted">${s.blurb}</span></span>
+    <span>${people} freelancer${people === 1 ? '' : 's'}<br><span class="muted">${jobs} open job${jobs === 1 ? '' : 's'}</span></span>
+    <span class="figure">from ${LL.money(s.from)}</span>
+    <span class="row">
+      <a class="btn small" href="freelancers.html?category=${s.id}">Find freelancers</a>
+      <a class="btn small ghost" href="jobs.html?category=${s.id}">See jobs</a>
+    </span>
   </div>`;
 }).join('');
 

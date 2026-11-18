@@ -9,7 +9,7 @@ const me = LL.me();
 const box = document.getElementById('checkout');
 
 if (!me || me.id !== job.customerId) {
-  box.innerHTML = `<div class="notice amber">Only the customer who posted this job can pay for it. <a href="login.html">Log in</a></div>`;
+  box.innerHTML = `<div class="notice wait">Only the customer who posted this job can pay for it. <a href="login.html">Log in</a></div>`;
 } else if (job.status !== 'assigned') {
   box.innerHTML = `<div class="notice">This job has already been paid for. <a href="job.html?id=${job.id}">Back to the job</a></div>`;
 } else {
@@ -19,7 +19,7 @@ if (!me || me.id !== job.customerId) {
   box.innerHTML = `
     <div class="card">
       <h3>${esc(job.title)}</h3>
-      <div class="list-item" style="margin-bottom:14px">${LLUI.avatar(freelancer, 44)}<div class="body"><b>${esc(freelancer.name)}</b><div class="small muted">${esc(freelancer.title)} &middot; ${esc(freelancer.suburb)}</div></div>${LLUI.verified(freelancer)}</div>
+      <div class="list-item" style="margin-bottom:14px">${LLUI.avatar(freelancer, 44)}<div class="body"><b>${esc(freelancer.name)}</b><div class="small muted">${esc(freelancer.title)}, ${esc(freelancer.suburb)}</div></div>${LLUI.verified(freelancer)}</div>
       <div class="summary-line"><span>Agreed job price</span><span>${LL.money(job.price)}</span></div>
       <div class="summary-line"><span>LocalLance fee for customers</span><span>${LL.money(0)}</span></div>
       <div class="summary-line total"><span>Total today</span><span>${LL.money(job.price)}</span></div>

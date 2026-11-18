@@ -25,7 +25,7 @@ function customerView(me) {
   };
 
   return `
-    <div class="row"><div><h1>Hi ${esc(me.name.split(' ')[0])}</h1><p class="muted">${esc(me.business)} &middot; ${esc(me.suburb)}</p></div><span class="spacer"></span><a class="btn" href="post-job.html">Post a job</a></div>
+    <div class="row"><div><h1>Hi ${esc(me.name.split(' ')[0])}</h1><p class="muted">${esc(me.business)}, ${esc(me.suburb)}</p></div><span class="spacer"></span><a class="btn" href="post-job.html">Post a job</a></div>
     ${statCards([
       [jobs.filter(j => j.status === 'open').length, 'open jobs'],
       [jobs.filter(j => ['assigned', 'in_progress', 'delivered'].includes(j.status)).length, 'jobs under way'],
@@ -55,7 +55,7 @@ function freelancerView(me) {
   };
 
   return `
-    <div class="row"><div><h1>Hi ${esc(me.name.split(' ')[0])}</h1><p class="muted">${esc(me.title)} &middot; ${esc(me.suburb)} &middot; ${LLUI.verified(me)}</p></div><span class="spacer"></span><a class="btn" href="jobs.html">Find jobs</a></div>
+    <div class="row"><div><h1>Hi ${esc(me.name.split(' ')[0])}</h1><p class="muted">${esc(me.title)}, ${esc(me.suburb)} ${LLUI.verified(me)}</p></div><span class="spacer"></span><a class="btn" href="jobs.html">Find jobs</a></div>
     ${statCards([
       [active.length, 'active jobs'],
       [proposals.filter(p => p.status === 'pending').length, 'proposals waiting'],
@@ -63,10 +63,10 @@ function freelancerView(me) {
       [LL.money(total('held')), 'held until approval']
     ])}
     <div class="promo">
-      <div><div class="tag">Promotion &middot; Promoted listings</div>
+      <div><div class="tag">Promotion, promoted listings</div>
         <h2>${me.promoted ? 'Your profile is promoted' : 'Get seen first for $15 a week'}</h2>
         <p>${me.promoted ? 'You appear at the top of search results and on the home page.' : 'Promoted freelancers appear at the top of search results. Demo only, nothing is charged.'}</p></div>
-      <span class="spacer"></span><button class="btn light" id="promote-btn">${me.promoted ? 'Stop promoting' : 'Promote my profile'}</button>
+      <span class="spacer"></span><button class="btn ghost" id="promote-btn">${me.promoted ? 'Stop promoting' : 'Promote my profile'}</button>
     </div>
     <div class="card"><h3>Active jobs</h3>
       ${active.length ? `<div class="table-wrap"><table>
@@ -77,13 +77,13 @@ function freelancerView(me) {
     <div class="card"><h3>My proposals</h3>
       ${proposals.length ? `<div class="table-wrap"><table>
         <tr><th>Job</th><th>Your price</th><th>Days</th><th>Sent</th><th>Status</th></tr>
-        ${proposals.map(p => `<tr><td>${jobLink(LL.job(p.jobId))}</td><td>${LL.money(p.amount)}</td><td>${p.days}</td><td>${p.createdAt}</td><td>${p.status === 'pending' ? '<span class="badge amber">Waiting</span>' : '<span class="badge">Not chosen</span>'}</td></tr>`).join('')}
+        ${proposals.map(p => `<tr><td>${jobLink(LL.job(p.jobId))}</td><td>${LL.money(p.amount)}</td><td>${p.days}</td><td>${p.createdAt}</td><td>${p.status === 'pending' ? '<span class="badge wait">Waiting</span>' : '<span class="badge">Not chosen</span>'}</td></tr>`).join('')}
       </table></div>` : LLUI.empty('You have no proposals waiting.')}
     </div>
     <div class="card"><h3>Earnings</h3>
       ${payments.length ? `<div class="table-wrap"><table>
         <tr><th>Job</th><th>Job price</th><th>Fee (8%)</th><th>You receive</th><th>Status</th></tr>
-        ${payments.map(p => `<tr><td>${jobLink(LL.job(p.jobId))}</td><td>${LL.money(p.amount)}</td><td>${LL.money(p.fee)}</td><td><b>${LL.money(p.payout)}</b></td><td>${p.status === 'held' ? '<span class="badge amber">Held</span>' : '<span class="badge green">Paid out ' + p.releasedAt + '</span>'}</td></tr>`).join('')}
+        ${payments.map(p => `<tr><td>${jobLink(LL.job(p.jobId))}</td><td>${LL.money(p.amount)}</td><td>${LL.money(p.fee)}</td><td><b>${LL.money(p.payout)}</b></td><td>${p.status === 'held' ? '<span class="badge wait">Held</span>' : '<span class="badge ok">Paid out ' + p.releasedAt + '</span>'}</td></tr>`).join('')}
       </table></div>` : LLUI.empty('Payments for your jobs will appear here.')}
     </div>`;
 }
