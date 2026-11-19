@@ -34,6 +34,7 @@ Other things to show:
 - **Fee-free first job**: create a new freelancer account on the **Log in** page and take a job through to payment. The fee is $0 on that job and 8% on every job after it.
 - **Minimum hourly rate**: on the **Log in** page, try to create a freelancer with an hourly rate under $26.44. The site refuses it, because that is the Australian national minimum wage from 1 July 2026.
 - **Map details**: on **Find freelancers**, hover a numbered pin on the map to see that freelancer's photo, distance, rating and hourly rate.
+- **Phone layout**: open the site on a phone, or drag the browser window narrow. The header becomes a menu button, and every list, form and table fits the screen.
 
 ## Where the required items are
 
