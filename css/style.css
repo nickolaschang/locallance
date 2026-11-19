@@ -55,6 +55,9 @@ b { color: var(--ink); }
 /* Bell and envelope, each with a count of things waiting. */
 .icon-btn { position: relative; padding: 0 3px; }
 .icon-btn .count { position: absolute; top: 12px; right: -8px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--blue); color: #fff; font: 600 11px/18px var(--font-body); text-align: center; }
+/* The menu button and the "phone-only" links are for small screens: see the end of this file. */
+.menu-btn { display: none; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); color: var(--ink); cursor: pointer; }
+.phone-only { display: none !important; }
 
 /* ----- Buttons ----- */
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 0 16px; border-radius: 6px; border: 1px solid var(--blue); background: var(--blue); color: #fff; font: 600 15px var(--font-body); cursor: pointer; }
@@ -243,7 +246,20 @@ main > .wrap:last-child { padding-bottom: 52px; }
 /* ----- Phones and tablets ----- */
 @media (max-width: 900px) {
   h1 { font-size: 30px; }
-  .cols, .cols.side-left, .cols.near, .field-row { grid-template-columns: 1fr; }
+  /* Header: one compact bar. The page links move behind the menu button. */
+  .site-header .wrap { gap: 14px; min-height: 56px; align-items: center; }
+  .menu-btn { display: inline-flex; }
+  .phone-only { display: flex !important; }
+  .wide-only { display: none !important; }
+  .nav.account { gap: 14px; align-items: center; }
+  .icon-btn { padding: 8px 3px; }
+  .icon-btn .count { top: -1px; }
+  .nav.main { display: none; order: 1; width: 100%; flex-direction: column; gap: 0; padding: 4px 0 10px; border-top: 1px solid var(--line); }
+  .site-header.open .nav.main { display: flex; }
+  .nav.main > a, .nav.main > button { padding: 11px 0; border: none; }
+  .nav.main > a.active { color: var(--blue); }
+  /* minmax(0, ...) stops a long line of text from pushing a column wider than the screen. */
+  .cols, .cols.side-left, .cols.near, .field-row { grid-template-columns: minmax(0, 1fr); }
   .hero::before { inset: 0; opacity: 0.35; }
   .hero::after { background: rgba(255, 255, 255, 0.8); }
   .hero .wrap { padding-top: 44px; padding-bottom: 20px; }
@@ -263,6 +279,25 @@ main > .wrap:last-child { padding-bottom: 52px; }
   .sequence { grid-template-columns: 1fr; gap: 28px; }
 }
 @media (max-width: 560px) {
+  .wrap { padding-left: 16px; padding-right: 16px; }
+  .credit { padding: 0 16px 12px; }
+  .card { padding: 16px; }
   .grid.c2, .grid.c3, .grid.c4, .cat-grid, .site-footer .wrap { grid-template-columns: 1fr; }
+  .grid.stats { grid-template-columns: 1fr 1fr; gap: 12px; }
   .bubble { max-width: 92%; }
+  /* Job and freelancer rows: text wraps instead of being cut off, and the price drops under it. */
+  .item { padding: 14px 16px; gap: 12px; }
+  .item .clip, .meta-item { white-space: normal; }
+  .item.job { grid-template-columns: 46px minmax(0, 1fr); }
+  .item.person, .list.compact .item.person { grid-template-columns: 26px 52px minmax(0, 1fr); }
+  .item.job .budget { grid-column: 2; text-align: left; }
+  .item.person .rate { grid-column: 3; text-align: left; }
+  /* Proposals: the price and the Accept button get their own line under the message. */
+  .proposal { flex-wrap: wrap; }
+  .proposal .right { flex-basis: 100%; display: flex; align-items: center; gap: 12px; text-align: left; }
+  .proposal .right .btn { margin: 0 0 0 auto !important; }
+  /* Tables keep readable columns and scroll sideways inside their frame. */
+  .table-wrap table { min-width: 540px; }
+  /* 16px text stops phones from zooming in when a field is tapped. */
+  input[type=text], input[type=email], input[type=number], input[type=date], input[type=search], select, textarea { font-size: 16px; }
 }

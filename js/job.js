@@ -76,7 +76,7 @@ function proposalList(j, ctx) {
   return `<div class="card"><h3>Proposals (${proposals.length})</h3>${proposals.map(p => {
     const f = LL.user(p.freelancerId);
     const state = p.status === 'accepted' ? '<span class="badge ok">Accepted</span>' : p.status === 'declined' ? '<span class="badge">Not chosen</span>' : '';
-    return `<div class="list-item" style="padding:16px 0;border-top:1px solid var(--line)">${LLUI.avatar(f, 48)}
+    return `<div class="list-item proposal" style="padding:16px 0;border-top:1px solid var(--line)">${LLUI.avatar(f, 48)}
       <div class="body">
         <div class="row"><b><a href="freelancer.html?id=${f.id}">${esc(f.name)}</a></b>${LLUI.stars(f)}${LLUI.verified(f)}${state}</div>
         <div class="small muted">${esc(f.title)}, ${esc(f.suburb)}, ${LL.distanceKm(j.suburb, f.suburb)} km from the job</div>

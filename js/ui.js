@@ -26,7 +26,8 @@ const LLUI = (() => {
     bell: '<path d="M6 16V11a6 6 0 0112 0v5l2 2H4l2-2zM10 20a2 2 0 004 0" />',
     mail: '<rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" />',
     chat: '<path d="M4 5h16v11H9l-5 4V5z" />',
-    search: '<circle cx="11" cy="11" r="7" /><path d="M16.5 16.5L21 21" />'
+    search: '<circle cx="11" cy="11" r="7" /><path d="M16.5 16.5L21 21" />',
+    menu: '<path d="M4 7h16M4 12h16M4 17h16" />'
   };
   const icon = (name, size = 22) => `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
 
@@ -78,27 +79,31 @@ const LLUI = (() => {
     return last && last.fromId !== me.id;
   }).length;
 
+  // On phones the page links sit behind a menu button. "wide-only" pieces show on big screens only,
+  // "phone-only" pieces show in the phone menu only (see the end of style.css).
   const header = active => {
     const me = LL.me();
-    const link = (key, href, label) => `<a href="${href}" class="${active === key ? 'active' : ''}">${label}</a>`;
+    const link = (key, href, label, extra = '') => `<a href="${href}" class="${active === key ? 'active' : ''} ${extra}">${label}</a>`;
     const iconLink = (key, href, name, count, label) => `<a class="icon-btn ${active === key ? 'active' : ''}" href="${href}" title="${label}" aria-label="${label}">${icon(name, 21)}${count ? `<span class="count">${count}</span>` : ''}</a>`;
     const account = me
       ? `${iconLink('dashboard', 'dashboard.html', 'bell', waitingOn(me), waitingOn(me) + ' waiting on you')}
          ${iconLink('messages', 'messages.html', 'mail', unanswered(me), unanswered(me) + ' to reply to')}
-         <a class="user-chip" href="dashboard.html">${avatar(me, 34)} ${esc(me.name.split(' ')[0])}</a>
-         <button class="link-btn" id="logout-btn">Log out</button>`
-      : `${link('login', 'login.html', 'Log in')}<a class="btn small" href="post-job.html">Post a job</a>`;
+         <a class="user-chip" href="dashboard.html">${avatar(me, 34)} <span class="wide-only">${esc(me.name.split(' ')[0])}</span></a>
+         <button class="link-btn wide-only logout-btn">Log out</button>`
+      : `${link('login', 'login.html', 'Log in', 'wide-only')}<a class="btn small" href="post-job.html">Post a job</a>`;
     return `<header class="site-header"><div class="wrap">
       <a class="logo" href="index.html">${pin(20, BLUE)} LocalLance</a>
-      <nav class="nav">
+      <nav class="nav main">
         ${link('jobs', 'jobs.html', 'Find jobs')}
         ${link('freelancers', 'freelancers.html', 'Find freelancers')}
         ${link('services', 'services.html', 'Services')}
         ${link('contact', 'contact.html', 'Contact us')}
         ${me ? link('dashboard', 'dashboard.html', 'Dashboard') : ''}
+        ${me ? '<button class="link-btn phone-only logout-btn">Log out</button>' : link('login', 'login.html', 'Log in', 'phone-only')}
       </nav>
       <span class="spacer"></span>
       <nav class="nav account">${account}</nav>
+      <button class="menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false">${icon('menu')}</button>
     </div></header>`;
   };
 
@@ -115,8 +120,14 @@ const LLUI = (() => {
   const mount = active => {
     document.getElementById('site-header').innerHTML = header(active);
     document.getElementById('site-footer').innerHTML = footer();
-    const logout = document.getElementById('logout-btn');
-    if (logout) logout.addEventListener('click', () => { LL.logout(); location.href = 'index.html'; });
+    document.querySelectorAll('.logout-btn').forEach(button =>
+      button.addEventListener('click', () => { LL.logout(); location.href = 'index.html'; }));
+    // The phone menu button opens and closes the list of page links.
+    const menu = document.getElementById('menu-btn');
+    menu.addEventListener('click', () => {
+      const open = document.querySelector('.site-header').classList.toggle('open');
+      menu.setAttribute('aria-expanded', open);
+    });
     document.getElementById('reset-btn').addEventListener('click', () => { if (confirm('Reset all demo data to how it started?')) LL.reset(); });
   };
 

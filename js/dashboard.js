@@ -5,7 +5,7 @@ LLUI.mount('dashboard');
 const esc = LLUI.esc;
 const board = document.getElementById('dashboard');
 
-const statCards = stats => `<div class="grid c4">${stats.map(([value, label]) =>
+const statCards = stats => `<div class="grid c4 stats">${stats.map(([value, label]) =>
   `<div class="card"><div class="num">${value}</div><div class="muted">${label}</div></div>`).join('')}</div>`;
 
 const jobLink = j => `<a href="job.html?id=${j.id}">${esc(j.title)}</a>`;
